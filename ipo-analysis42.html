@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPO RADAR — 최근 6개월 신규 상장 분석 (2025.09~2026.03)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    :root{--bg:#040810;--s1:#080f1a;--s2:#0d1726;--bd:#1a2a3f;--ac:#00d4ff;--tx:#e2eaf4;--mt:#4a6080;--rd:#ff3b6b;--gn:#00ff9d;--yw:#ffd700;--pu:#a78bfa;--up:#ff3b6b;--dn:#4a9eff;--fl:#c8cdd4;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg);color:var(--tx);font-family:'Noto Sans KR',sans-serif;min-height:100vh;}
+    body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,.025)1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.025)1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+    /* header */
+    header{position:sticky;top:0;z-index:100;background:rgba(4,8,16,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--bd);padding:0 28px;}
+    .hi{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:54px;}
+    .logo{display:flex;align-items:center;gap:10px;}
+    .li{width:28px;height:28px;background:linear-gradient(135deg,var(--ac),#06f);border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;color:#000;}
+    .lt{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:var(--ac);letter-spacing:2px;}
+    nav{display:flex;gap:3px;}
+    .nb{padding:5px 13px;background:transparent;border:none;color:var(--mt);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;border-radius:4px;transition:all .2s;text-transform:uppercase;}
+    .nb:hover{color:var(--tx);background:var(--s2);}
+    .nb.on{color:var(--ac);background:rgba(0,212,255,.1);}
+    .hr{display:flex;align-items:center;gap:12px;}
+    .sw{position:relative;}
+    .si{background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:7px 12px 7px 32px;color:var(--tx);font-family:'IBM Plex Mono',monospace;font-size:11px;width:190px;transition:all .2s;}
+    .si:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 3px rgba(0,212,255,.1);}
+    .si::placeholder{color:var(--mt);}
+    .sic{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--mt);font-size:13px;pointer-events:none;}
+    .sw2{display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:10px;color:var(--mt);}
+    .dot{width:7px;height:7px;border-radius:50%;background:var(--yw);animation:blink 2s infinite;}
+    .dot.live{background:var(--gn);}
+    .dot.err{background:var(--rd);animation:none;}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+    /* ticker */
+    .tkb{max-width:1440px;margin:14px auto 0;padding:0 28px;}
+    .tki{background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:9px 18px;display:flex;gap:22px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:11px;}
+    .tki::-webkit-scrollbar{height:2px;}
+    .tki::-webkit-scrollbar-thumb{background:var(--bd);}
+    .ti{display:flex;align-items:center;gap:7px;white-space:nowrap;}
+    .tl{color:var(--mt);}
+    .tv{color:var(--tx);font-weight:600;}
+    .tp{color:var(--gn);}
+    .tn{color:var(--rd);}
+    .ts{color:var(--bd);}
+    /* banner */
+    .bnr{max-width:1440px;margin:12px auto 0;padding:0 28px;}
+    .bni{background:rgba(255,215,0,.04);border:1px solid rgba(255,215,0,.15);border-radius:8px;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .bni.ok{background:rgba(0,255,157,.04);border-color:rgba(0,255,157,.2);}
+    .bni.er{background:rgba(255,59,107,.04);border-color:rgba(255,59,107,.2);}
+    .bm{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--yw);}
+    .bni.ok .bm{color:var(--gn);}
+    .bni.er .bm{color:var(--rd);}
+    .bbs{display:flex;gap:6px;}
+    .bx{padding:4px 10px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25);border-radius:4px;color:var(--ac);font-family:'Space Mono',monospace;font-size:9px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+    .bx:hover{background:rgba(0,212,255,.15);}
+    /* main grid */
+    main{position:relative;z-index:1;max-width:1440px;margin:14px auto;padding:0 28px 32px;display:grid;grid-template-columns:330px 1fr;gap:14px;}
+    .panel{background:var(--s1);border:1px solid var(--bd);border-radius:10px;overflow:hidden;animation:fu .35s ease forwards;}
+    @keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .ph{padding:12px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;}
+    .ptit{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mt);}
+    .badge{padding:2px 7px;border-radius:3px;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;}
+    .bc{background:rgba(0,212,255,.15);color:var(--ac);}
+    .bg{background:rgba(0,255,157,.15);color:var(--gn);}
+    .by{background:rgba(255,215,0,.15);color:var(--yw);}
+    .br{background:rgba(255,59,107,.15);color:var(--rd);}
+    .bp{background:rgba(167,139,250,.15);color:var(--pu);}
+    /* left col */
+    .lc{display:flex;flex-direction:column;gap:12px;}
+    .fb{padding:9px 14px;border-bottom:1px solid var(--bd);display:flex;gap:5px;flex-wrap:wrap;}
+    .fc{padding:3px 9px;background:transparent;border:1px solid var(--bd);border-radius:10px;color:var(--mt);font-family:'Space Mono',monospace;font-size:9px;cursor:pointer;transition:all .15s;}
+    .fc:hover{border-color:var(--ac);color:var(--ac);}
+    .fc.on{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.4);color:var(--ac);}
+    .sl{overflow-y:auto;max-height:570px;}
+    .sl::-webkit-scrollbar{width:3px;}
+    .sl::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px;}
+    .si2{padding:11px 15px;border-bottom:1px solid var(--bd);cursor:pointer;transition:background .12s;position:relative;}
+    .si2.owned{border-left:3px solid rgba(74,158,255,.6);padding-left:12px;background:rgba(74,158,255,.04);}
+    .si2.owned:hover{background:rgba(74,158,255,.08)!important;}
+    .si2:last-child{border-bottom:none;}
+    .si2:hover{background:rgba(255,255,255,.02);}
+    .si2.ac{background:rgba(0,212,255,.04);}
+    .si2.ac::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--ac);}
+    .srt{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:5px;}
+    .sn{font-size:13px;font-weight:700;margin-bottom:2px;}
+    .sm{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--mt);}
+    .sc{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;line-height:1;}
+    .sc.up{color:var(--up);}
+    .sc.dn{color:var(--dn);}
+    .sb{display:flex;align-items:center;gap:7px;}
+    .sd{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--mt);}
+    .bw{flex:1;height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;}
+    .bf{height:100%;border-radius:2px;transition:width .5s;}
+    .bf.up{background:var(--up);}
+    .bf.dn{background:var(--dn);}
+    .stag{font-family:'Space Mono',monospace;font-size:8px;padding:1px 5px;border-radius:2px;}
+    /* stat mini */
+    .sg{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);}
+    .sgc{background:var(--s1);padding:12px 14px;}
+    .sgl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mt);margin-bottom:4px;}
+    .sgv{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;}
+    .sgv.p{color:var(--up);}
+    .sgv.n{color:var(--dn);}
+    /* right */
+    .rc{display:flex;flex-direction:column;gap:12px;}
+    .dh{padding:18px 22px;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+    .dhn h2{font-size:21px;font-weight:900;margin-bottom:4px;}
+    .dhm{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+    .dhc{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mt);}
+    .dhp{text-align:right;}
+    .pb{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;line-height:1;margin-bottom:4px;}
+    .pc{font-family:'Space Mono',monospace;font-size:12px;}
+    .pc.p{color:var(--up);}
+    .pc.n{color:var(--dn);}
+    .pl{display:inline-block;width:11px;height:11px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-left:5px;}
+    @keyframes sp{to{transform:rotate(360deg)}}
+    .sr{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--bd);}
+    .sri{background:var(--s1);padding:11px 15px;}
+    .srl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mt);margin-bottom:4px;}
+    .srv{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;}
+    .cs{padding:16px 20px;border-bottom:1px solid var(--bd);}
+    .ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+    .ct{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--mt);}
+    .cw{position:relative;height:420px;}
+    .cw canvas{height:100%!important;}
+    .co{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(4,8,16,.7);border-radius:6px;font-family:'Space Mono',monospace;font-size:11px;color:var(--mt);z-index:5;}
+    .as{padding:16px 20px;}
+    .al{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--mt);margin-bottom:7px;}
+    .at{font-size:12px;line-height:1.75;color:#8aa0bc;}
+    .wb{margin-top:11px;padding:9px 13px;background:rgba(255,59,107,.05);border:1px solid rgba(255,59,107,.2);border-radius:6px;display:flex;gap:8px;align-items:flex-start;}
+    .wi{color:var(--rd);font-size:11px;margin-top:1px;flex-shrink:0;}
+    .wt{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#ff7090;line-height:1.5;}
+    /* modal */
+    #mod{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;}
+    #mod.open{display:flex;}
+    .mb{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;}
+    .mt{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--ac);margin-bottom:12px;}
+    .mo{font-size:12px;line-height:1.8;color:#8aa0bc;}
+    .mc{background:var(--bg);border:1px solid var(--bd);border-radius:5px;padding:9px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ac);margin:7px 0;overflow-x:auto;white-space:pre;}
+    .mcl{margin-top:14px;padding:6px 16px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);border-radius:6px;color:var(--ac);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;}
+    /* tabs */
+    .tp{display:none;}
+    .tp.on{display:block;}
+    /* sector */
+    .secg{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);}
+    .seci{background:var(--s1);padding:14px 16px;}
+    .secn{font-size:13px;font-weight:700;margin-bottom:4px;}
+    .secc{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mt);}
+    .secb{height:3px;background:var(--s2);border-radius:2px;margin-top:8px;}
+    .secbf{height:100%;border-radius:2px;transition:width .5s;}
+    /* sector tag colors */
+    .s-bio{color:#f472b6;background:rgba(244,114,182,.12);}
+    .s-semi{color:#00d4ff;background:rgba(0,212,255,.12);}
+    .s-ai{color:#a78bfa;background:rgba(167,139,250,.12);}
+    .s-def{color:#ffd700;background:rgba(255,215,0,.12);}
+    .s-bty{color:#fb923c;background:rgba(251,146,60,.12);}
+    .s-ctt{color:#34d399;background:rgba(52,211,153,.12);}
+    .s-etc{color:#4a6080;background:rgba(74,96,128,.12);}
+    /* table */
+    ::-webkit-scrollbar{width:4px;height:4px;}
+    ::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px;}
+    @media(max-width:1024px){main{grid-template-columns:1fr;}}
+    @media(max-width:640px){main,.tkb,.bnr{padding-left:12px;padding-right:12px;}.sr{grid-template-columns:repeat(2,1fr);}.secg{grid-template-columns:1fr 1fr;}}
+  </style>
+</head>
+<body>
+
+<!-- MODAL -->
+<div id="mod">
+  <div class="mb">
+    <div class="mt">// 실시간 API 연동 가이드</div>
+    <div class="mo">
+      현재 공모가는 <b style="color:var(--ac)">실제 KRX 공시·뉴스 데이터</b>이며, 현재가는 Yahoo Finance Live 조회를 시도합니다.<br><br>
+      <b style="color:var(--ac)">① Yahoo Finance (프록시 경유)</b>
+      <div class="mc">// 백엔드 프록시 (Node.js/Express)
+app.get('/api/quote/:ticker', async (req, res) => {
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${req.params.ticker}`;
+  const r = await fetch(url);
+  res.json(await r.json());
+});</div>
+      <b style="color:var(--ac)">② KRX 공식 데이터</b>
+      <div class="mc">POST data.krx.co.kr/comm/bldAttendant/getJsonData.cmd
+{ bld:"dbms/MDC/STAT/standard/MDCSTAT03901",
+  strtDd:"20250901", endDd:"20260301" }</div>
+      <b style="color:var(--ac)">③ DART 공시 API</b>
+      <div class="mc">https://opendart.fss.or.kr/api/list.json
+  ?crtfc_key=YOUR_KEY&bgn_de=20250901&pblntf_ty=I</div>
+    </div>
+    <button class="mcl" onclick="document.getElementById('mod').classList.remove('open')">닫기</button>
+  </div>
+</div>
+
+<header>
+  <div class="hi">
+    <div style="display:flex;align-items:center;gap:22px">
+      <div class="logo">
+        <div class="li">IP</div>
+        <span class="lt">IPO RADAR</span>
+      </div>
+      <nav>
+        <button class="nb on" onclick="sw('main',this)">수익률순</button>
+        <button class="nb" onclick="sw('all',this)">전체 목록</button>
+        <button class="nb" onclick="sw('sector',this)">섹터 현황</button>
+        <button class="nb" onclick="sw('prices',this)">💰 가격 관리</button>
+        <button class="nb" onclick="sw('lockup',this)">🔒 보호예수 물량</button>
+      </nav>
+    </div>
+    <div class="hr">
+      <div class="sw"><span class="sic">⌕</span><input class="si" type="text" placeholder="종목명 검색..." oninput="flt(this.value)"></div>
+      <div class="sw2"><div class="dot" id="dot"></div><span id="stxt">KRX DATA</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="bnr">
+  <div class="bni" id="bnr">
+    <span class="bm" id="bmsg">⚡ 2025년 9~12월 실제 신규 상장 데이터 (KRX/공시 기준) | 현재가 Live 조회 가능</span>
+    <div class="bbs">
+      <button class="bx" onclick="liveFetch()"><span id="lspin" style="display:none" class="pl"></span>실시간 가격</button>
+      <button class="bx" onclick="document.getElementById('mod').classList.add('open')">API 가이드</button>
+    </div>
+  </div>
+</div>
+
+<div class="tkb">
+  <div class="tki">
+    <div class="ti"><span class="tl">KOSPI</span><span class="tv" id="tkKS">—</span><span id="tkKSc" class="tn">—</span></div>
+    <span class="ts">│</span>
+    <div class="ti"><span class="tl">KOSDAQ</span><span class="tv" id="tkKQ">—</span><span id="tkKQc" class="tp">—</span></div>
+    <span class="ts">│</span>
+    <div class="ti"><span class="tl">2025년 4Q 상장</span><span class="tv">22개사</span><span style="color:var(--mt);font-size:9px;margin-left:2px">(스팩제외)</span></div>
+    <span class="ts">│</span>
+    <div class="ti"><span class="tl">따따블 달성</span><span class="tv tp">5개사</span></div>
+    <span class="ts">│</span>
+    <div class="ti"><span class="tl">평균 청약경쟁률</span><span class="tv">1,128:1</span></div>
+    <span class="ts">│</span>
+    <div class="ti"><span class="tl">평균 초일 수익률</span><span class="tv tp">+127%</span></div>
+    <span class="ts">│</span>
+    <div class="ti"><span class="tl">기준일</span><span class="tv" id="tkDt">—</span></div>
+  </div>
+</div>
+
+<!-- TAB: 수익률순 -->
+<div class="tp on" id="tp-main">
+<main>
+  <div class="lc">
+    <div class="panel">
+      <div class="ph"><span class="ptit">최근 6개월 신규 상장 (스팩제외)</span><span class="badge bc" id="cnt">—</span></div>
+      <div class="fb" id="fb">
+        <button class="fc on" onclick="setF('all',this)">전체</button>
+        <button class="fc" onclick="setF('bio',this)">바이오</button>
+        <button class="fc" onclick="setF('semi',this)">반도체</button>
+        <button class="fc" onclick="setF('ai',this)">AI</button>
+        <button class="fc" onclick="setF('def',this)">방산</button>
+        <button class="fc" onclick="setF('bty',this)">뷰티</button>
+        <button class="fc" onclick="setF('ctt',this)">콘텐츠</button>
+        <button class="fc" onclick="setF('kospi',this)">KOSPI</button>
+      </div>
+      <div class="sl" id="sl"></div>
+    </div>
+    <div class="panel">
+      <div class="ph"><span class="ptit">시장 요약</span></div>
+      <div class="sg">
+        <div class="sgc"><div class="sgl">평균 공모가 대비</div><div class="sgv p" id="avg">—</div></div>
+        <div class="sgc"><div class="sgl">4Q 공모 규모</div><div class="sgv">약 2.5조원</div></div>
+        <div class="sgc"><div class="sgl">상장 첫날 평균</div><div class="sgv p">+127%</div></div>
+        <div class="sgc"><div class="sgl">밴드상단 확정비율</div><div class="sgv">100%</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rc">
+    <div class="panel">
+      <div class="dh">
+        <div class="dhn"><h2 id="dn">종목을 선택하세요</h2>
+          <div class="dhm">
+            <span class="dhc" id="dc">—</span>
+            <span class="badge bc" id="dd">—</span>
+            <span class="badge" id="ds">—</span>
+          </div>
+        </div>
+        <div class="dhp"><div style="font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mt);margin-bottom:4px">현재가</div><div class="pb" id="dp">—</div><div class="pc" id="dpc">—</div><div id="dpc-avg" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;margin-top:3px"></div></div>
+      </div>
+      <div class="sr">
+        <div class="sri"><div class="srl">공모가</div><div class="srv" id="d1">—</div></div>
+        <div class="sri"><div class="srl">IPO 이후 등락</div><div style="display:flex;align-items:center;gap:6px"><div class="srv" id="d2">—</div><div id="d2avg" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;color:var(--rd)"></div></div></div>
+        <div class="sri"><div class="srl">시가총액(추정)</div><div class="srv" id="d3">—</div></div>
+        <div class="sri"><div class="srl">청약경쟁률</div><div class="srv" id="d4">—</div></div>
+        <div class="sri"><div class="srl">거래소</div><div class="srv" id="d5">—</div></div>
+        <div class="sri" id="d-shares-row" style="display:none"><div class="srl">총발행주식수</div><div class="srv" id="d-shares">—</div></div>
+        <div class="sri" id="d-free-row" style="display:none"><div class="srl">상장일 해제</div><div class="srv" id="d-free">—</div></div>
+        <div class="sri" id="d-fratio-row" style="display:none"><div class="srl">유통가능비율</div><div class="srv" id="d-fratio">—</div></div>
+      </div>
+      <div class="cs">
+        <div class="ch">
+          <span class="ct">PRICE TRAJECTORY D+0 ~ D+180</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--mt)">녹=공모가 초과 / 적=하회 · 빨간선=공모가 · 점선=보호예수</span>
+        </div>
+        <div class="cw"><div class="co" id="co">← 왼쪽에서 종목 선택</div><canvas id="ch"></canvas></div>
+      </div>
+      <div class="as">
+        <div class="al">ANALYSIS</div>
+        <div class="at" id="ddesc">왼쪽 목록에서 종목을 클릭하면 상세 분석이 표시됩니다.</div>
+        <div class="wb" id="dwarn" style="display:none"><span class="wi">⚠</span><span class="wt" id="dwarnt"></span></div>
+        <div id="dlockup" style="display:none;margin-top:10px;padding:8px 12px;background:rgba(26,42,63,.4);border-radius:6px;border:1px solid rgba(26,42,63,.8)"></div>
+
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+
+<!-- TAB: 전체 목록 -->
+<div class="tp" id="tp-all">
+  <div style="max-width:1440px;margin:14px auto;padding:0 28px">
+    <div class="panel">
+      <div class="ph"><span class="ptit">2025년 9~12월 신규 상장 전체 목록 (스팩 제외)</span><span class="badge bc">실제 공모가 기준</span></div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:820px">
+          <thead><tr style="border-bottom:1px solid var(--bd);font-family:'Space Mono',monospace;font-size:9px;color:var(--mt);text-transform:uppercase;letter-spacing:1px">
+            <th style="padding:10px 16px;text-align:left">종목명</th>
+            <th style="padding:10px 12px;text-align:left">코드</th>
+            <th style="padding:10px 12px;text-align:left">시장</th>
+            <th style="padding:10px 12px;text-align:left">섹터</th>
+            <th style="padding:10px 12px;text-align:left">상장일</th>
+            <th style="padding:10px 12px;text-align:right">공모가</th>
+            <th style="padding:10px 12px;text-align:right">현재가</th>
+            <th style="padding:10px 12px;text-align:right">공모가 대비</th>
+            <th style="padding:10px 12px;text-align:right">청약경쟁률</th>
+          </tr></thead>
+          <tbody id="tb"></tbody>
+        </table>
+      </div>
+      <div style="padding:9px 16px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--mt);border-top:1px solid var(--bd)">* 현재가는 뉴스·공시 기반 추정값 또는 Live 조회값입니다. 투자 참고 목적으로만 활용하십시오.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: 섹터 현황 -->
+<div class="tp" id="tp-sector">
+  <div style="max-width:1440px;margin:14px auto;padding:0 28px;display:flex;flex-direction:column;gap:14px">
+    <div class="panel">
+      <div class="ph"><span class="ptit">섹터별 상장 현황 (2025 4Q)</span></div>
+      <div class="secg" id="secg"></div>
+    </div>
+    <div class="panel">
+      <div class="ph"><span class="ptit">2025년 4분기 IPO 시장 인사이트</span></div>
+      <div style="padding:18px 22px;display:grid;grid-template-columns:1fr 1fr;gap:18px">
+        <div><div class="al" style="margin-bottom:8px">따따블 5개사 배출</div><div class="at">이노테크·큐리오시스·에임드바이오·프로티나·그린광학이 상장일 따따블 달성. 에임드바이오는 공모가(1.1만원) 대비 6배 이상 급등해 시총 최고 4.65조원 기록.</div></div>
+        <div><div class="al" style="margin-bottom:8px">노타 공모가 7배 달성</div><div class="at">AI 경량화 기업 노타는 공모가 9,100원에서 상장 사흘 만에 6만5,000원까지 급등, 공모가 7배 돌파. 2026년 2월 기준 3만6,800원 유지(공모가 대비 +304%).</div></div>
+        <div><div class="al" style="margin-bottom:8px">역대급 청약 증거금</div><div class="at">세미파이브 15.7조원(역대 최대), 에임드바이오 15.3조원, 씨엠티엑스 13.8조원 순. 4분기 11개 종목의 상장 첫날 평균 종가 수익률 127% 기록.</div></div>
+        <div><div class="al" style="margin-bottom:8px">제도 개편 첫 적용</div><div class="at">2025년 7월 IPO 제도 개편(기관 의무보유확약 40% 이상 우선배정) 시행 이후 첫 대형 흥행. 에스투더블유(S2W)가 개편안 첫 타자로 상장일 +97% 급등.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- TAB: 가격 관리 -->
+<div class="tp" id="tp-prices">
+  <div style="max-width:960px;margin:20px auto;padding:0 28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div>
+        <div style="font-family:'Space Mono',monospace;font-size:13px;color:#e2eaf4;letter-spacing:1px">가격 관리</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--mt);margin-top:3px">현재가(최종 업무일 종가)와 내 평단가를 입력하면 차트에 즉시 반영됩니다</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="saveAllPrices()" style="background:rgba(0,212,255,.15);border:1px solid rgba(0,212,255,.4);border-radius:5px;padding:7px 16px;color:#00d4ff;font-family:'Space Mono',monospace;font-size:9px;cursor:pointer;letter-spacing:.5px">💾 전체 저장</button>
+        <button onclick="clearAllPrices()" style="background:rgba(255,59,107,.08);border:1px solid rgba(255,59,107,.3);border-radius:5px;padding:7px 14px;color:var(--rd);font-family:'Space Mono',monospace;font-size:9px;cursor:pointer">초기화</button>
+      </div>
+    </div>
+
+    <!-- 헤더 -->
+    <div style="display:grid;grid-template-columns:28px 1fr 90px 110px 110px 90px;gap:0;padding:6px 12px;background:rgba(26,42,63,.8);border-radius:6px 6px 0 0;border:1px solid var(--bd)">
+      <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--mt)">#</div>
+      <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--mt)">종목</div>
+      <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--mt);text-align:right">공모가</div>
+      <div style="font-family:'Space Mono',monospace;font-size:8px;color:#00d4ff;text-align:right">현재가 입력</div>
+      <div style="font-family:'Space Mono',monospace;font-size:8px;color:#ffd700;text-align:right">내 평단가</div>
+      <div style="font-family:'Space Mono',monospace;font-size:8px;color:#00ff9d;text-align:right">수익률</div>
+    </div>
+
+    <!-- 종목 행 -->
+    <div id="price-rows" style="border:1px solid var(--bd);border-top:none;border-radius:0 0 6px 6px;overflow:hidden"></div>
+
+    <div style="margin-top:10px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--mt)">
+      💡 현재가 입력 후 <b style="color:#00d4ff">전체 저장</b> 클릭 → 모든 차트·리스트에 즉시 반영 &nbsp;|&nbsp; 평단가는 차트에 <b style="color:#4a9eff">파란 실선</b>으로 표시됩니다
+    </div>
+  </div>
+</div>
+
+<div class="tp" id="tp-lockup">
+  <div style="max-width:960px;margin:20px auto;padding:0 28px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div>
+        <div style="font-family:'Space Mono',monospace;font-size:13px;color:#00d4ff;font-weight:700">🔒 보호예수 물량 입력</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--mt);margin-top:4px">각 항목에 주식 수(주)를 입력하세요 · 차트 라벨에 만주 단위로 표시됩니다</div>
+      </div>
+      <button onclick="saveLockupQty()" style="background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.4);color:#00d4ff;font-family:'Space Mono',monospace;font-size:11px;padding:7px 18px;border-radius:6px;cursor:pointer">💾 전체 저장</button>
+    </div>
+    <!-- 헤더 -->
+    <div style="display:grid;grid-template-columns:28px 1fr 120px 130px 1fr 1fr 1fr;gap:0;padding:6px 12px;background:rgba(0,212,255,.06);border-bottom:1px solid var(--bd)">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--mt)">#</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--mt)">종목</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#00d4ff;text-align:right">총발행주식수<br><span style="color:var(--mt)">주 · 1주가(원) · 시총(억)</span></div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#00ff9d;text-align:right">상장일 해제<br><span style="color:var(--mt)">주 (유통가능)</span></div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#ffd700;text-align:right">보호예수 ①<br><span style="color:var(--mt)">라벨 · 일수 · 주수 · 지분율</span></div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#ff3b6b;text-align:right">보호예수 ②<br><span style="color:var(--mt)">라벨 · 일수 · 주수 · 지분율</span></div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#a78bfa;text-align:right">보호예수 ③<br><span style="color:var(--mt)">라벨 · 일수 · 주수 · 지분율</span></div>
+    </div>
+    <div id="lockup-rows"></div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// 실제 2025.09~2026.03 신규 상장 종목 데이터 (25개사) (KRX/공시/뉴스 기반)
+// 현재가 = 뉴스·보도 기준 추정값 (Live 조회 전)
+// ─────────────────────────────────────────────────────────────
+const STOCKS = [
+  // ── 2025년 9월 ──
+  {id:1, name:"에스투더블유", code:"488280", exch:"KOSDAQ", sec:"ai",
+   dt:"2025-09-19", ipo:13200, est:95, cur:null,
+   sub:"1,973:1", mcap:"약 1,730억", ticker:"488280.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'우리사주 90일',qty:0},{d:180,label:'최대주주 180일',qty:0}],
+   desc:"사이버보안·AI 빅데이터 플랫폼(XARVIS·QUAXAR). 국가안보 B2G 시장 1위. 상장일 공모가 두 배 터치(+97%). 7월 IPO 제도 개편 후 첫 흥행 타자.",
+   warn:null},
+  // ── 2025년 10월 ──
+  {id:2, name:"명인제약", code:"317450", exch:"KOSPI", sec:"bio",
+   dt:"2025-10-01", ipo:58000, est:110, cur:null,
+   sub:"2,500:1", mcap:"약 1조 972억", ticker:"317450.KS",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'임원 90일',qty:0},{d:180,label:'최대주주 180일',qty:0}],
+   desc:"중추신경계(CNS) 전문의약품 40년 업력. 이가탄·메이킨Q 등 대표제품 보유. 코스피 상장. 상장일 공모가 대비 110% 급등.",
+   warn:null},
+  // ── 2025년 11월 ──
+  {id:3, name:"노타", code:"488340", exch:"KOSDAQ", sec:"ai",
+   dt:"2025-11-03", ipo:9100, est:304, cur:34400,
+   sub:"2,894:1", mcap:"약 4,000억", ticker:"488340.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'우리사주 90일',qty:0},{d:180,label:'최대주주·VC 180일',qty:0}],
+   desc:"KAIST 창업 AI 모델 경량화 기업. NetsPresso 플랫폼으로 엔비디아·삼성·ARM 협업. 상장 사흘 만에 공모가 7배 돌파. 2026.2 기준 36,800원(+304%).",
+   warn:"상장 초기 고점 대비 45% 하락. 변동성 높음."},
+  {id:4, name:"이노테크", code:"488380", exch:"KOSDAQ", sec:"semi",
+   dt:"2025-11-07", ipo:14700, est:157, cur:35000,
+   sub:"2,631:1", mcap:"약 1,600억", ticker:"488380.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'우리사주 90일',qty:0},{d:180,label:'최대주주 180일',qty:0}],
+   desc:"폴더블 디스플레이 신뢰성 환경시험 장비. 삼성디스플레이·메타·현대모비스 고객사. 상장일 따따블(+300%) 달성. 8개월만의 따따블 종목.",
+   warn:null},
+  {id:5, name:"큐리오시스", code:"488320", exch:"KOSDAQ", sec:"bio",
+   dt:"2025-11-13", ipo:22000, est:205, cur:45000,
+   sub:"1,210:1", mcap:"약 1,692억", ticker:"488320.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'우리사주 90일',qty:0},{d:180,label:'최대주주·FI 180일',qty:0}],
+   desc:"랩 오토메이션 라이브셀 이미징 시스템. 기관 의무보유확약 97.89%(역대 최고). 상장 시초가 +300%, 공모가 대비 205% 수익률.",
+   warn:null},
+  {id:6, name:"세나테크놀로지", code:"488360", exch:"KOSDAQ", sec:"etc",
+   dt:"2025-11-14", ipo:56800, est:75, cur:43000,
+   sub:"1,048:1", mcap:"약 3,168억", ticker:"488360.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'임원 90일',qty:0},{d:180,label:'최대주주 180일',qty:0}],
+   desc:"모터사이클용 무선통신 장비(블루투스 헬멧) 세계 1위(점유율 60%). 상장 시초가 +115.85%.",
+   warn:null},
+  {id:7, name:"그린광학", code:"488400", exch:"KOSDAQ", sec:"def",
+   dt:"2025-11-17", ipo:16000, est:200, cur:null,
+   sub:"1,892:1", mcap:"약 2,114억", ticker:"488400.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'우리사주 90일',qty:0},{d:180,label:'최대주주 180일',qty:0}],
+   desc:"방산·우주항공·반도체용 광학부품 28년 전문기업. 상장 시초가 +237.50% 급등. 방위사업청 납품 이력.",
+   warn:null},
+  {id:8, name:"더핑크퐁컴퍼니", code:"488660", exch:"KOSDAQ", sec:"ctt",
+   dt:"2025-11-18", ipo:38000, est:35, cur:null,
+   sub:"615:1", mcap:"약 5,453억", ticker:"488660.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'우리사주 90일',qty:0},{d:180,label:'최대주주·FI 180일',qty:0}],
+   desc:"'아기상어(Baby Shark)' 글로벌 IP 보유. AI 다국어 현지화 플랫폼 OneVoice 개발. 시총 5,000억+ 대형 IPO.",
+   warn:null},
+  {id:9, name:"씨엠티엑스", code:"488720", exch:"KOSDAQ", sec:"semi",
+   dt:"2025-11-20", ipo:60500, est:117, cur:null,
+   sub:"1,833:1", mcap:"약 5,610억", ticker:"488720.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'우리사주 90일',qty:0},{d:180,label:'최대주주·VC 180일',qty:0}],
+   desc:"반도체 식각·증착 공정용 실리콘·사파이어 파츠. TSMC 1차 협력사. 청약 증거금 13.8조. 상장 시초가 +151.24%.",
+   warn:"생산 인프라 확장으로 단기 현금 소모 예상."},
+  {id:10, name:"비츠로넥스텍", code:"488500", exch:"KOSDAQ", sec:"def",
+   dt:"2025-11-21", ipo:6900, est:68, cur:null,
+   sub:"1,421:1", mcap:"약 1,999억", ticker:"488500.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'임원 90일',qty:0},{d:180,label:'최대주주 180일',qty:0}],
+   desc:"국내 유일 액체로켓엔진 전문 개발사. 누리호 엔진 컴포넌트 납품. 상장일 +61% 급등.",
+   warn:"2024년 영업손실 141억원. 흑자전환 시점 모니터링 필요."},
+  {id:11, name:"아로마티카", code:"488780", exch:"KOSDAQ", sec:"bty",
+   dt:"2025-11-27", ipo:8000, est:138, cur:null,
+   sub:"5,729:1", mcap:"약 2,400억", ticker:"488780.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'우리사주 90일',qty:0},{d:180,label:'최대주주 180일',qty:0}],
+   desc:"아로마테라피 기반 클린뷰티 브랜드. 경쟁률 5,729:1 역대급. 상장일 공모가 대비 138% 수익.",
+   warn:null},
+  // ── 2025년 12월 ──
+  {id:12, name:"에임드바이오", code:"490530", exch:"KOSDAQ", sec:"bio",
+   dt:"2025-12-04", ipo:11000, est:420, cur:66500,
+   sub:"1,736:1", mcap:"최고 4.65조(코스닥 12위)", ticker:"490530.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'우리사주 90일',qty:0},{d:180,label:'최대주주·FI 180일',qty:0}],
+   desc:"삼성서울병원 스핀오프. ADC(항체약물접합체) 전주기 내재화. 베링거인겔하임 3조+ 기술이전. 증거금 15.3조. 상장 이틀 따따블+420%.",
+   warn:"유통 가능 물량 24.1%. 단기 변동성 고위험."},
+  {id:13, name:"테라뷰홀딩스", code:"490380", exch:"KOSDAQ", sec:"semi",
+   dt:"2025-12-09", ipo:8000, est:50, cur:null,
+   sub:"542:1", mcap:"약 1,200억", ticker:"490380.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'임원 90일',qty:0},{d:180,label:'최대주주 180일',qty:0}],
+   desc:"영국 테라헤르츠(THz)파 측정장비 제조. 코스닥 최초 영국 기업 상장. 반도체·배터리 비파괴검사 장비.",
+   warn:null},
+  {id:14, name:"페스카로", code:"490440", exch:"KOSDAQ", sec:"ai",
+   dt:"2025-12-10", ipo:15500, est:55, cur:null,
+   sub:"1,210:1", mcap:"약 1,700억", ticker:"490440.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'임원 90일',qty:0},{d:180,label:'최대주주 180일',qty:0}],
+   desc:"차량 통합보안 플랫폼 전문기업. 자동차 사이버보안 ISO 21434 대응. 현대차·기아·GM 공급사.",
+   warn:null},
+  {id:15, name:"이지스", code:"490450", exch:"KOSDAQ", sec:"ai",
+   dt:"2025-12-11", ipo:15000, est:40, cur:null,
+   sub:"546:1", mcap:"약 1,500억", ticker:"490450.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'임원 90일',qty:0},{d:180,label:'최대주주 180일',qty:0}],
+   desc:"디지털 어스 서비스 플랫폼. 위성·항공·드론 데이터 기반 공간정보 분석. 스마트팜·재해관리·국방 분야.",
+   warn:null},
+  {id:16, name:"쿼드메디슨", code:"490460", exch:"KOSDAQ", sec:"bio",
+   dt:"2025-12-12", ipo:15000, est:55, cur:null,
+   sub:"607:1", mcap:"약 1,800억", ticker:"490460.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'임원 90일',qty:0},{d:180,label:'최대주주 180일',qty:0}],
+   desc:"마이크로니들 약물전달 플랫폼 전문기업. 경피 약물전달(TDD) 기술. 청약 증거금 1.9조원.",
+   warn:null},
+  {id:17, name:"티엠씨", code:"490540", exch:"KOSPI", sec:"etc",
+   dt:"2025-12-15", ipo:9300, est:45, cur:null,
+   sub:"1,305:1", mcap:"약 2,000억", ticker:"490540.KS",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'우리사주 90일',qty:0},{d:180,label:'최대주주 180일',qty:0}],
+   desc:"특수케이블 전문기업. 방산·에너지·해양 특수케이블. 코스피 상장. 청약 증거금 11.1조원.",
+   warn:null},
+  {id:18, name:"아크릴", code:"490410", exch:"KOSDAQ", sec:"ai",
+   dt:"2025-12-09", ipo:19500, est:243, cur:null,
+   sub:"790:1", mcap:"약 1,800억", ticker:"490410.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'우리사주 90일',qty:0},{d:180,label:'최대주주·VC 180일',qty:0}],
+   desc:"AI 기반 데이터 분석·시각화 플랫폼. 상장 이후 공모가 대비 243.6% 수익률 기록.",
+   warn:null},
+  {id:19, name:"나라스페이스테크놀로지", code:"490370", exch:"KOSDAQ", sec:"def",
+   dt:"2025-12-17", ipo:16500, est:80, cur:null,
+   sub:"920:1", mcap:"약 2,200억", ticker:"490370.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'우리사주 90일',qty:0},{d:180,label:'최대주주 180일',qty:0}],
+   desc:"위성 기반 지구관측 데이터 플랫폼. 소형 SAR 위성 운영. 국내 1호 초소형 위성 기업.",
+   warn:null},
+  {id:20, name:"알지노믹스", code:"490360", exch:"KOSDAQ", sec:"bio",
+   dt:"2025-12-18", ipo:22500, est:478, cur:158000,
+   sub:"1,871:1", mcap:"약 3,500억", ticker:"490360.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'우리사주 90일',qty:0},{d:180,label:'최대주주·FI 180일',qty:0}],
+   desc:"RNA 기반 유전자치료제 개발. 글로벌 기술이전 1조7000억 성과. 상장일 따따블. 12.22 종가 152,100원(+578%).",
+   warn:"고가 상장 후 변동성 구간 진입."},
+  {id:21, name:"삼진식품", code:"490420", exch:"KOSDAQ", sec:"etc",
+   dt:"2025-12-19", ipo:7600, est:152, cur:null,
+   sub:"3,224:1", mcap:"약 1,800억", ticker:"490420.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'우리사주 90일',qty:0},{d:180,label:'최대주주 180일',qty:0}],
+   desc:"삼진어묵 브랜드 운영사. 청약 경쟁률 3,224:1 역대급 흥행. K-푸드 플랫폼. 상장 후 152.8% 수익률.",
+   warn:null},
+  {id:22, name:"리브스메드", code:"490400", exch:"KOSDAQ", sec:"bio",
+   dt:"2025-12-24", ipo:55000, est:90, cur:null,
+   sub:"231:1", mcap:"약 1조 3,563억", ticker:"490400.KQ",
+   lockup:[{d:60,label:'우리사주 60일',qty:0},{d:90,label:'기관 90일',qty:0},{d:180,label:'최대주주·FI 180일',qty:0}],
+   desc:"세계 최초 90도 다관절 복강경 수술기구 원천특허. 72개국 진출. 미국 헬스트러스트 공급계약. 시총 1조+.",
+   warn:"FI 지분 높음. 단계별 보호예수 해제 오버행 리스크."},
+  {id:23, name:"세미파이브", code:"490470", exch:"KOSDAQ", sec:"semi",
+   dt:"2025-12-29", ipo:24000, est:65, cur:null,
+   sub:"436:1", mcap:"약 8,092억", ticker:"490470.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'우리사주 90일',qty:0},{d:180,label:'최대주주·VC 180일',qty:0}],
+   desc:"AI ASIC 설계 전문기업. 2024년 신규수주 1,239억원. 퓨리오사AI·리벨리온 협업. 2nm~4nm 첨단공정. 증거금 15.7조(역대 최대).",
+   warn:"영업적자 지속. 수주→수익화 시점 모니터링 필요."},
+  // ── 2026년 3월 ──
+  {id:24, name:"케이뱅크", code:"279570", exch:"KOSPI", sec:"etc",
+   dt:"2026-03-05", ipo:8300, est:0, cur:8180,
+   sub:"199:1", mcap:"약 3조 3,673억", ticker:"279570.KS",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'임원 90일',qty:0},{d:180,label:'최대주주 180일',qty:0}],
+   desc:"국내 1호 인터넷은행. 3수 끝 코스피 상장. 공모가 밴드 최하단 8,300원 확정(PBR 1.38배). 청약 증거금 10조원. 상장일 +0.36% 소폭 강보합.",
+   warn:"업비트 제휴 만료(2026.10) 리스크. 단기 유통 물량 압박."},
+  {id:25, name:"에스팀", code:"458350", exch:"KOSDAQ", sec:"ctt",
+   dt:"2026-03-06", ipo:8500, est:300, cur:34000,
+   sub:"1,961:1", mcap:"약 1,530억", ticker:"458350.KQ",
+   lockup:[{d:30,label:'기관 30일',qty:0},{d:90,label:'우리사주 90일',qty:0},{d:180,label:'최대주주 180일',qty:0}],
+   desc:"장윤주·한혜진·이현이 소속 브랜딩 콘텐츠 기업. IP 기반 브랜드 인큐베이팅. 상장일 따따블(+300%) 달성. 청약 경쟁률 1,961:1, 증거금 3.75조원.",
+   warn:null},
+];
+
+const SM = {
+  bio:{label:'바이오',color:'#f472b6',cls:'s-bio'},
+  semi:{label:'반도체',color:'#00d4ff',cls:'s-semi'},
+  ai:{label:'AI/빅데이터',color:'#a78bfa',cls:'s-ai'},
+  def:{label:'방산/우주',color:'#ffd700',cls:'s-def'},
+  bty:{label:'뷰티',color:'#fb923c',cls:'s-bty'},
+  ctt:{label:'콘텐츠',color:'#34d399',cls:'s-ctt'},
+  etc:{label:'기타',color:'#4a6080',cls:'s-etc'},
+};
+
+const PATS={
+  // [D+일수, 공모가 대비 배수] — D+0~D+180
+  1:[[0,1.97],[7,1.6],[14,1.5],[30,1.95],[60,1.75],[90,1.55],[120,1.45],[150,1.40],[180,1.38]],
+  2:[[0,2.1],[14,2.3],[30,2.1],[60,1.85],[90,1.70],[120,1.60],[150,1.55],[180,1.50]],
+  3:[[0,3.1],[2,7.2],[7,5.5],[14,4.2],[30,3.8],[60,4.04],[90,3.40],[120,3.10],[150,2.90],[180,2.80]],
+  4:[[0,4.0],[7,3.5],[14,2.8],[30,2.57],[60,2.20],[90,1.95],[120,1.80],[150,1.72],[180,1.65]],
+  5:[[0,4.0],[7,4.2],[14,3.5],[30,3.05],[60,2.70],[90,2.45],[120,2.30],[150,2.20],[180,2.10]],
+  6:[[0,2.16],[14,1.9],[30,1.75],[60,1.60],[90,1.50],[120,1.42],[150,1.38],[180,1.35]],
+  7:[[0,3.38],[7,3.5],[14,3.0],[30,2.70],[60,2.40],[90,2.20],[120,2.05],[150,1.95],[180,1.88]],
+  8:[[0,1.53],[14,1.4],[30,1.35],[60,1.25],[90,1.18],[120,1.12],[150,1.08],[180,1.05]],
+  9:[[0,2.51],[14,2.3],[30,2.17],[60,1.95],[90,1.78],[120,1.65],[150,1.58],[180,1.52]],
+  10:[[0,1.68],[30,1.7],[60,1.55],[90,1.42],[120,1.32],[150,1.25],[180,1.20]],
+  11:[[0,2.38],[30,2.1],[60,1.90],[90,1.72],[120,1.60],[150,1.52],[180,1.45]],
+  12:[[0,4.0],[2,6.1],[7,5.5],[14,4.8],[25,4.0],[30,3.80],[60,3.20],[90,2.80],[120,2.55],[150,2.40],[180,2.28]],
+  13:[[0,1.5],[30,1.5],[60,1.35],[90,1.22],[120,1.12],[150,1.06],[180,1.02]],
+  14:[[0,1.55],[30,1.55],[60,1.40],[90,1.28],[120,1.18],[150,1.10],[180,1.05]],
+  15:[[0,1.4],[30,1.4],[60,1.25],[90,1.14],[120,1.06],[150,1.00],[180,0.96]],
+  16:[[0,1.55],[30,1.55],[60,1.40],[90,1.28],[120,1.18],[150,1.10],[180,1.05]],
+  17:[[0,1.45],[30,1.45],[60,1.30],[90,1.18],[120,1.10],[150,1.04],[180,1.00]],
+  18:[[0,3.44],[14,3.0],[30,3.43],[60,3.10],[90,2.80],[120,2.60],[150,2.45],[180,2.35]],
+  19:[[0,2.0],[30,1.8],[60,1.60],[90,1.45],[120,1.35],[150,1.28],[180,1.22]],
+  20:[[0,4.0],[3,6.78],[7,5.8],[14,4.78],[30,4.20],[60,3.60],[90,3.10],[120,2.80],[150,2.60],[180,2.45]],
+  21:[[0,2.52],[30,2.1],[60,1.88],[90,1.70],[120,1.58],[150,1.50],[180,1.43]],
+  22:[[0,1.9],[30,1.9],[60,1.72],[90,1.55],[120,1.42],[150,1.35],[180,1.28]],
+  23:[[0,1.65],[30,1.65],[60,1.48],[90,1.35],[120,1.25],[150,1.18],[180,1.12]],
+  24:[[0,1.004],[1,0.986]],
+  25:[[0,4.0],[1,3.82]],
+};
+
+let sel=null, chart=null, curF='all', curQ='';
+// localStorage 기반 사용자 입력가격 저장
+const userPrices = JSON.parse(localStorage.getItem('ipo_prices')||'{}');
+// {id: {cur: 현재가, avg: 평단가}}
+function saveUserPrices(){ localStorage.setItem('ipo_prices', JSON.stringify(userPrices)); }
+function getUserCur(s){ return (userPrices[s.id]&&userPrices[s.id].cur) || s.cur || null; }
+function getUserAvg(s){ return (userPrices[s.id]&&userPrices[s.id].avg) || null; }
+
+window.addEventListener('DOMContentLoaded',()=>{
+  loadLockupData();
+  document.getElementById('tkDt').textContent=new Date().toLocaleDateString('ko-KR');
+  renderList(STOCKS); renderTable(STOCKS); renderSector(); updateAvg();
+  // 기본 티커
+  document.getElementById('tkKS').textContent='5,584.87';
+  document.getElementById('tkKSc').textContent='▲ 0.97';
+  document.getElementById('tkKQ').textContent='1,154.67';
+  document.getElementById('tkKQc').textContent='▲ 37.18';
+  // 첫 종목 자동선택
+  selectStock(STOCKS[24]); // 에스팀
+});
+
+function getR(s){
+  const cur=getUserCur(s);
+  return cur?((cur-s.ipo)/s.ipo*100):s.est;
+}
+
+function getFiltered(){
+  return STOCKS.filter(s=>{
+    const mf=curF==='all'||s.sec===curF||(curF==='kospi'&&s.exch==='KOSPI');
+    const ms=!curQ||s.name.includes(curQ)||s.code.includes(curQ);
+    return mf&&ms;
+  });
+}
+
+function renderList(stocks){
+  document.getElementById('cnt').textContent=stocks.length+'개';
+  const el=document.getElementById('sl');
+  if(!stocks.length){el.innerHTML='<div style="padding:20px;text-align:center;font-size:11px;color:var(--mt)">검색 결과 없음</div>';return;}
+  const sorted=[...stocks].sort((a,b)=>{
+    const aOwn=!!getUserAvg(a), bOwn=!!getUserAvg(b);
+    if(aOwn!==bOwn) return bOwn-aOwn;
+    return getR(b)-getR(a);
+  });
+  el.innerHTML=sorted.map(s=>{
+    const r=getR(s),up=r>0,flat=r===0,bw=Math.min(Math.abs(r)/6,100);
+    const sm=SM[s.sec]||SM.etc,ac=sel&&sel.id===s.id;
+    const avg=getUserAvg(s),cur=getUserCur(s);
+    const dispPrice=cur||Math.round(s.ipo*(1+r/100));
+    const priceLabel=cur?'3/6 종가':'추정가';
+    const pnlVal=avg&&cur?(cur-avg)/avg*100:null;
+    const pnlUp=pnlVal!==null&&pnlVal>0;
+    const pnlFlat=pnlVal!==null&&pnlVal===0;
+    const rColor=flat?'var(--fl)':up?'var(--up)':'var(--dn)';
+    const pnlColor=pnlFlat?'var(--fl)':pnlUp?'var(--up)':'var(--dn)';
+
+    // 오른쪽 수치 블록: 평단대비%(보유시 최상단·큰 글자) → 현재가 → 공모가대비%
+    const rightBlock=avg&&pnlVal!==null
+      ? `<div style="font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:800;color:${pnlColor};line-height:1">${pnlUp?'+':''}${pnlVal.toFixed(1)}%</div>
+         <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--mt);margin-top:1px;margin-bottom:4px">평단 대비</div>
+         <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;color:${rColor}">₩${dispPrice.toLocaleString()}</div>
+         <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--mt);margin-top:1px;margin-bottom:3px">${priceLabel}</div>
+         <div style="font-size:10px;color:${rColor};font-family:'IBM Plex Mono',monospace;font-weight:700">${up?'+':''}${r.toFixed(1)}%</div>
+         <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--mt);margin-top:1px">공모가 대비</div>`
+      : `<div style="color:${rColor};font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700">${up?'+':''}${r.toFixed(1)}%</div>
+         <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;color:${up?'var(--up)':'var(--dn)'};margin-top:3px">₩${dispPrice.toLocaleString()}</div>
+         <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--mt);margin-top:1px">${priceLabel}</div>`;
+
+    return `<div class="si2${ac?' ac':''}${avg?' owned':''}" onclick="selectStock(STOCKS.find(x=>x.id===${s.id}))">
+      <div class="srt">
+        <div>
+          <div class="sn" style="color:${avg?'#00ff9d':'#6b7f96'}">${s.name}${avg?'<span style="font-size:8px;background:rgba(74,158,255,.18);color:#4a9eff;border:1px solid rgba(74,158,255,.35);border-radius:3px;padding:1px 5px;margin-left:6px;font-family:IBM Plex Mono,monospace;vertical-align:middle">보유</span>':''}</div>
+          <div class="sm">${s.code} · ${s.exch} · ${s.dt}</div>
+          ${avg?`<div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--mt);margin-top:3px">평단 ₩${avg.toLocaleString()}</div>`:''}
+        </div>
+        <div style="text-align:right">${rightBlock}</div>
+      </div>
+      <div class="sb">
+        <div class="sd">공모가 ₩${s.ipo.toLocaleString()}</div>
+        <div class="bw"><div class="bf ${up?'up':'dn'}" style="width:${bw}%"></div></div>
+        <span class="stag ${sm.cls}">${sm.label}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectStock(s){
+  if(!s)return;
+  sel=s;
+  renderList(getFiltered());
+  const sm=SM[s.sec]||SM.etc,r=getR(s),up=r>=0;
+  document.getElementById('dn').textContent=s.name;
+  document.getElementById('dc').textContent=s.code+' · '+s.exch;
+  document.getElementById('dd').textContent=s.dt;
+  document.getElementById('ds').className='badge '+(sm.cls||'');
+  document.getElementById('ds').textContent=sm.label;
+  const pe=document.getElementById('dp'),ce=document.getElementById('dpc');
+  const effectiveCurSel=getUserCur(s);
+  if(effectiveCurSel){
+    pe.textContent='₩'+effectiveCurSel.toLocaleString();
+    ce.textContent=(up?'▲':'▼')+' '+Math.abs(r).toFixed(1)+'% (공모가 대비)';
+  } else {
+    pe.innerHTML='₩'+s.ipo.toLocaleString()+'<span class="pl"></span>';
+    ce.textContent='추정 '+(up?'+':'')+r.toFixed(0)+'% (공모가 대비)';
+  }
+  ce.className='pc '+(up?'p':'n');
+  // 평단 대비 수익률 (dhp 영역)
+  const dpcAvg=document.getElementById('dpc-avg');
+  const _avg=getUserAvg(s), _cur=getUserCur(s);
+  if(_avg && _cur){
+    const pnl=(_cur-_avg)/_avg*100, pnlUp=pnl>=0;
+    dpcAvg.style.display='block';
+    dpcAvg.style.color=pnlUp?'var(--up)':'var(--dn)';
+    dpcAvg.textContent='평단 대비 '+(pnlUp?'+':'')+pnl.toFixed(1)+'%  (₩'+_avg.toLocaleString()+')';
+  } else {
+    dpcAvg.style.display='none';
+  }
+  document.getElementById('d1').textContent='₩'+s.ipo.toLocaleString();
+  const de=document.getElementById('d2');
+  de.textContent=(up?'+':'')+r.toFixed(1)+'%';de.style.color=up?'var(--up)':'var(--dn)';
+  // 평단 대비 수익률 표시
+  const d2avg=document.getElementById('d2avg');
+  const userAvgVal=getUserAvg(s);
+  const curVal=getUserCur(s);
+  if(userAvgVal && curVal){
+    const pnl=(curVal-userAvgVal)/userAvgVal*100;
+    const pnlUp=pnl>=0;
+    d2avg.style.display='inline-block';
+    d2avg.style.color=pnlUp?'var(--up)':'var(--dn)';
+    d2avg.textContent='/ 평단 '+(pnlUp?'+':'')+pnl.toFixed(1)+'%';
+  } else {
+    d2avg.style.display='none';
+  }
+  // 시가총액: 보호예수 입력값 우선, 없으면 s.mcap
+  (function(){
+    const mcap=s.totalMcap>0
+      ? s.totalMcap.toLocaleString()+'억'
+      : (s.mcap||'—');
+    document.getElementById('d3').textContent=mcap;
+  })();
+  document.getElementById('d4').textContent=s.sub;
+  document.getElementById('d5').textContent=s.exch;
+  // 총주식수 / 상장일 해제 / 유통가능비율
+  (function(){
+    const ts=s.totalShares||0;
+    const fs=s.freeShares||0;
+    const fr=s.freeRatio!=null?s.freeRatio:null;
+    const fmt=function(n){return Math.floor(n/10000).toLocaleString()+'만주 ('+n.toLocaleString()+'주)';};
+    if(ts>0){
+      document.getElementById('d-shares-row').style.display='';
+      document.getElementById('d-shares').textContent=fmt(ts);
+    } else {
+      document.getElementById('d-shares-row').style.display='none';
+    }
+    if(fs>0){
+      document.getElementById('d-free-row').style.display='';
+      document.getElementById('d-free').textContent=fmt(fs);
+    } else {
+      document.getElementById('d-free-row').style.display='none';
+    }
+    // 해제율: freeRatio 직접입력 우선, 없으면 ts/fs로 역산
+    const ratio=fr!=null?fr:(ts>0&&fs>0?Math.round(fs/ts*1000)/10:null);
+    if(ratio!=null){
+      document.getElementById('d-fratio-row').style.display='';
+      const el=document.getElementById('d-fratio');
+      el.textContent=ratio.toFixed(1)+'%';
+      el.style.color=ratio>=50?'var(--up)':ratio>=30?'#ffd700':'var(--dn)';
+    } else {
+      document.getElementById('d-fratio-row').style.display='none';
+    }
+  })();
+  document.getElementById('ddesc').textContent=s.desc;
+  const wb=document.getElementById('dwarn');
+  if(s.warn){wb.style.display='flex';document.getElementById('dwarnt').textContent=s.warn;}
+  else{wb.style.display='none';}
+
+  // 보호예수 해제일 렌더링
+  const luEl=document.getElementById('dlockup');
+  if(s.lockup&&s.lockup.length){
+    const listDate=new Date(s.dt);
+    const now=new Date();
+    const COLORS=['#ffd700','#ff3b6b','#a78bfa'];
+    let html='<div style="font-family:\'Space Mono\',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mt);margin-bottom:6px">보호예수 해제 일정</div>';
+    s.lockup.forEach(function(lu,i){
+      const rel=new Date(listDate);
+      rel.setDate(rel.getDate()+lu.d);
+      const past=rel<now;
+      const dStr=rel.toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'});
+      const c=COLORS[i%COLORS.length];
+      const lineColor=past?'var(--mt)':c;
+      const strike=past?'text-decoration:line-through;':'';
+      const icon=past?'<span style="font-size:9px;color:var(--rd)">✓ 해제</span>':'<span style="font-size:9px;color:'+c+'">⏳</span>';
+      html+='<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(26,42,63,.5)">';
+      html+='<div style="width:3px;height:26px;border-radius:2px;background:'+c+';flex-shrink:0"></div>';
+      html+='<div style="flex:1">';
+      html+='<div style="font-family:\'IBM Plex Mono\',monospace;font-size:10px;color:'+lineColor+';'+strike+'">'+lu.label+'</div>';
+      html+='<div style="font-family:\'IBM Plex Mono\',monospace;font-size:9px;color:var(--mt)">D+'+lu.d+' · '+dStr+(past?' <span style=\u0022color:var(--rd)\u0022>해제완료</span>':'')+'</div>';
+      html+='</div>'+icon+'</div>';
+    });
+    luEl.innerHTML=html;
+    luEl.style.display='block';
+  } else { luEl.style.display='none'; }
+
+  document.getElementById('co').style.display='none';
+  drawChart(s);
+}
+
+function drawChart(s){
+  if(chart){chart.destroy();chart=null;}
+  const rawPts=PATS[s.id]||[[0,1],[30,0.95],[90,0.9],[180,0.85]];
+  const base=s.ipo;
+  const xTicks=[0,30,60,90,120,150,180];
+
+  function interp(pts,x){
+    if(x<=pts[0][0]) return pts[0][1];
+    if(x>=pts[pts.length-1][0]) return pts[pts.length-1][1];
+    for(let i=0;i<pts.length-1;i++){
+      const x0=pts[i][0],y0=pts[i][1],x1=pts[i+1][0],y1=pts[i+1][1];
+      if(x>=x0&&x<=x1) return y0+(y1-y0)*(x-x0)/(x1-x0);
+    }
+    return pts[pts.length-1][1];
+  }
+
+  const maxDay=rawPts[rawPts.length-1][0];
+  const labels=xTicks.map(function(d){return d===0?'상장일':'D+'+d;});
+
+  const listDate=new Date(s.dt);
+  const today=new Date();
+  const elapsed=Math.floor((today-listDate)/(1000*60*60*24));
+
+  // s.cur(실제 종가)가 있으면 elapsed 위치에 반영
+  const vals=xTicks.map(function(d){
+    if(d>maxDay) return null;
+    if(d>elapsed) return null;  // 오늘 이후는 표시 안 함
+    return Math.round(base*interp(rawPts,d));
+  });
+
+  // s.cur 또는 사용자 입력 현재가 사용
+  const effectiveCur = getUserCur(s);
+  const userAvg = getUserAvg(s);
+
+  // elapsed 위치가 xTick 사이에 있으면 현재가 별도 포인트로 추가
+  const curPointData=xTicks.map(function(d){ return null; });
+  if(effectiveCur && elapsed>=0 && elapsed<=180){
+    const nearestIdx=xTicks.reduce(function(pi,t,i){ return Math.abs(t-elapsed)<Math.abs(xTicks[pi]-elapsed)?i:pi; },0);
+    curPointData[nearestIdx]=effectiveCur;
+    vals[nearestIdx]=effectiveCur;
+  }
+
+  // 최고가 / 최저가 인덱스 계산 (null 제외)
+  let peakIdx=0, troughIdx=0;
+  vals.forEach(function(v,i){
+    if(v===null) return;
+    if(v>=(vals[peakIdx]||0)) peakIdx=i;
+    if(vals[troughIdx]===null||v<=(vals[troughIdx]||Infinity)) troughIdx=i;
+  });
+  const peakVal=vals[peakIdx], troughVal=vals[troughIdx];
+
+  // 공모가 기준선: 데이터 있는 구간까지만
+  const lastIdx=vals.reduce(function(last,v,i){return v!==null?i:last;},0);
+  const ipoLine=xTicks.map(function(d,i){return i<=lastIdx?base:null;});
+
+  const ctx=document.getElementById('ch').getContext('2d');
+  const g=ctx.createLinearGradient(0,0,0,220);
+  g.addColorStop(0,'rgba(0,212,255,.12)');
+  g.addColorStop(1,'rgba(0,212,255,0)');
+
+  // 보호예수 + TODAY 수직선 플러그인
+  const overlayPlugin={
+    id:'overlay',
+    afterDraw:function(ch){
+      const c=ch.ctx, xScale=ch.scales.x, yScale=ch.scales.y;
+      const LCOL=['#ffd700','#ff3b6b','#a78bfa'];
+      // 보호예수 점선
+      (s.lockup||[]).forEach(function(lu,i){
+        if(lu.d>180) return;
+        const tidx=xTicks.indexOf(lu.d);
+        if(tidx<0) return;
+        const xp=xScale.getPixelForValue(tidx);
+        c.save();
+        c.strokeStyle=LCOL[i%LCOL.length];
+        c.lineWidth=1.5;
+        c.setLineDash([4,3]);
+        c.beginPath();c.moveTo(xp,yScale.top);c.lineTo(xp,yScale.bottom);c.stroke();
+        c.setLineDash([]);
+        const qtyStr=lu.qty>0?(' '+Math.floor(lu.qty/10000)+'만주'):'';
+        const ratioStr=lu.ratio!=null&&lu.ratio>0?(' '+lu.ratio+'%'):'';
+        const lbl=lu.label+qtyStr+ratioStr;
+        c.font="bold 12px 'IBM Plex Mono',monospace";
+        const lw=c.measureText(lbl).width+10;
+        const lh=18;
+        const isLast=lu.d>=180;
+        const lx=isLast ? xp-lw-6 : xp-lw/2;
+        const ly=yScale.top+4+i*22;
+        c.fillStyle=LCOL[i%LCOL.length];c.globalAlpha=0.9;
+        c.fillRect(lx,ly,lw,lh);
+        c.globalAlpha=1;c.fillStyle='#000';
+        c.textAlign=isLast?'left':'center';c.textBaseline='middle';
+        c.fillText(lbl,isLast?lx+5:xp,ly+lh/2);
+        c.restore();
+      });
+      // 최고가 수직선 (흰색)
+      if(peakVal!==null && peakIdx!==troughIdx || peakVal!==null){
+        const xp=xScale.getPixelForValue(peakIdx);
+        const yp=yScale.getPixelForValue(peakVal);
+        c.save();
+        c.strokeStyle='rgba(255,255,255,0.5)';
+        c.lineWidth=1; c.setLineDash([3,4]);
+        c.beginPath();c.moveTo(xp,yScale.top);c.lineTo(xp,yScale.bottom);c.stroke();
+        c.setLineDash([]);
+        // 가격 라벨
+        c.font="bold 14px 'IBM Plex Mono',monospace";
+        const lbl='▲ \u20a9'+peakVal.toLocaleString();
+        const lw=c.measureText(lbl).width+12, lh=20;
+        const lx=xp-lw/2, ly=yp-lh-6;
+        c.fillStyle='rgba(20,30,50,0.85)';
+        c.strokeStyle='rgba(255,255,255,0.5)';
+        c.lineWidth=1;
+        c.beginPath();c.roundRect(lx,ly,lw,lh,3);c.fill();c.stroke();
+        c.fillStyle='#ffffff';
+        c.textAlign='center';c.textBaseline='middle';
+        c.fillText(lbl,xp,ly+lh/2);
+        c.restore();
+      }
+
+      // 최저가 수직선 (회색) — 최고가와 같은 지점이면 생략
+      if(troughVal!==null && troughIdx!==peakIdx){
+        const xp=xScale.getPixelForValue(troughIdx);
+        const yp=yScale.getPixelForValue(troughVal);
+        c.save();
+        c.strokeStyle='rgba(150,160,180,0.45)';
+        c.lineWidth=1; c.setLineDash([3,4]);
+        c.beginPath();c.moveTo(xp,yScale.top);c.lineTo(xp,yScale.bottom);c.stroke();
+        c.setLineDash([]);
+        // 가격 라벨
+        c.font="bold 14px 'IBM Plex Mono',monospace";
+        const lbl='▼ \u20a9'+troughVal.toLocaleString();
+        const lw=c.measureText(lbl).width+12, lh=20;
+        const lx=xp-lw/2, ly=yp+6;
+        c.fillStyle='rgba(20,30,50,0.85)';
+        c.strokeStyle='rgba(150,160,180,0.45)';
+        c.lineWidth=1;
+        c.beginPath();c.roundRect(lx,ly,lw,lh,3);c.fill();c.stroke();
+        c.fillStyle='#a0aabb';
+        c.textAlign='center';c.textBaseline='middle';
+        c.fillText(lbl,xp,ly+lh/2);
+        c.restore();
+      }
+
+      // TODAY 선
+      if(elapsed>=0&&elapsed<=180){
+        const frac=Math.min(elapsed/30,6);
+        const xp=xScale.getPixelForValue(frac);
+        c.save();
+        c.strokeStyle='rgba(0,212,255,0.6)';
+        c.lineWidth=1;c.setLineDash([2,4]);
+        c.beginPath();c.moveTo(xp,yScale.top);c.lineTo(xp,yScale.bottom);c.stroke();
+        c.setLineDash([]);
+        // TODAY 레이블 + 현재가
+        const todayLabel=effectiveCur?'3/6 ₩'+effectiveCur.toLocaleString():'TODAY';
+        const fw=c.measureText(todayLabel).width+12;
+        const fh=20;
+        c.fillStyle='rgba(0,212,255,0.15)';
+        c.strokeStyle='rgba(0,212,255,0.5)';
+        c.lineWidth=0.8;
+        c.beginPath();
+        c.roundRect(xp-fw/2, yScale.top-fh-2, fw, fh, 3);
+        c.fill();c.stroke();
+        c.fillStyle='rgba(0,212,255,1)';
+        c.font="bold 12px 'IBM Plex Mono',monospace";
+        c.textAlign='center';c.textBaseline='middle';
+        c.fillText(todayLabel, xp, yScale.top-fh/2-2);
+        c.restore();
+      }
+      // 평단가 수평선 (TODAY 기점 → 오른쪽 끝, 노란 실선)
+      if(userAvg && userAvg>0){
+        const yp=yScale.getPixelForValue(userAvg);
+        if(yp>=yScale.top && yp<=yScale.bottom){
+          c.save();
+
+          // TODAY x좌표 계산 (elapsed 기반)
+          const frac=elapsed>=0&&elapsed<=180?Math.min(elapsed/30,6):0;
+          const xStart=xScale.getPixelForValue(frac);
+
+          // 글로우 실선
+          c.shadowColor='rgba(255,215,0,0.7)';
+          c.shadowBlur=8;
+          c.strokeStyle='#ffd700';
+          c.lineWidth=2.5;
+          c.setLineDash([]);
+          c.beginPath();c.moveTo(xStart,yp);c.lineTo(yScale.right,yp);c.stroke();
+          c.shadowBlur=0; c.shadowColor='transparent';
+
+          // TODAY 기점 원형 마커
+          c.fillStyle='#ffd700';
+          c.shadowColor='rgba(255,215,0,0.8)';
+          c.shadowBlur=8;
+          c.beginPath();
+          c.arc(xStart, yp, 4, 0, Math.PI*2);
+          c.fill();
+          c.shadowBlur=0;
+
+          // 손익 계산
+          const pnl=effectiveCur?((effectiveCur-userAvg)/userAvg*100):null;
+          const pnlUp=pnl!==null&&pnl>=0;
+          const lbl='\uD83D\uDCCC 평단 \u20a9'+userAvg.toLocaleString()+(pnl!==null?' '+(pnlUp?'+':'')+pnl.toFixed(1)+'%':'');
+
+          // 라벨 배경 박스
+          c.font="bold 15px 'IBM Plex Mono',monospace";
+          const lw=c.measureText(lbl).width+16, lh=22;
+          const lx=yScale.right-lw-6, ly=yp-lh-4;
+          c.fillStyle='rgba(10,20,40,0.88)';
+          c.strokeStyle='#ffd700';
+          c.lineWidth=1.5;
+          c.beginPath();
+          c.roundRect(lx, ly, lw, lh, 4);
+          c.fill(); c.stroke();
+
+          // 라벨 텍스트
+          c.fillStyle=pnl===null?'#ffd700':pnlUp?'#ff3b6b':'#4a9eff';
+          c.textAlign='right'; c.textBaseline='middle';
+          c.fillText(lbl, yScale.right-13, ly+lh/2);
+
+          c.restore();
+        }
+      }
+    }
+  };
+
+  chart=new Chart(ctx,{
+    type:'line',
+    data:{labels:labels,datasets:[
+      {label:'공모가',data:ipoLine,borderColor:'#ff8c00',borderWidth:1.5,
+       pointRadius:0,pointHoverRadius:0,fill:false,tension:0,spanGaps:false,order:2},
+      {label:'주가',data:vals,borderWidth:2,
+       pointRadius:function(ctx){return vals[ctx.dataIndex]!==null?4:0;},
+       pointBackgroundColor:'rgba(0,212,255,0.8)',
+       pointHoverRadius:6,fill:true,backgroundColor:g,tension:0.35,spanGaps:false,order:1,
+       segment:{borderColor:function(ctx){
+          const owned=!!getUserAvg(s);
+          if(owned) return ctx.p1.parsed.y>=base?'#00ff9d':'#00cc7a';
+          return ctx.p1.parsed.y>=base?'#555555':'#444444';
+        }}},
+      {label:'현재가',data:curPointData,
+       pointRadius:function(ctx){return curPointData[ctx.dataIndex]!==null?8:0;},
+       pointHoverRadius:10,
+       pointBackgroundColor:'#00d4ff',
+       pointBorderColor:'#fff',
+       pointBorderWidth:2,
+       borderWidth:0,fill:false,spanGaps:false,order:0,
+       showLine:false}
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:true,labels:{
+          filter:function(item){return item.text==='공모가'||(item.text==='현재가'&&effectiveCur);},
+          boxWidth:8,boxHeight:8,padding:10,
+          color:'#e2eaf4',font:{family:"'IBM Plex Mono',monospace",size:14}
+        }},
+        tooltip:{
+          backgroundColor:'#080f1a',borderColor:'#1a2a3f',borderWidth:1,
+          titleColor:'#4a6080',bodyColor:'#e2eaf4',
+          callbacks:{
+            title:function(items){var d=xTicks[items[0].dataIndex];return d===0?'상장일':'D+'+d;},
+            label:function(ctx){
+              if(ctx.raw===null) return null;
+              if(ctx.dataset.label==='공모가') return '공모가: ₩'+base.toLocaleString();
+              if(ctx.dataset.label==='현재가') return '현재가(3/6): ₩'+ctx.parsed.y.toLocaleString()+' ('+(((ctx.parsed.y/base)-1)*100).toFixed(1)+'%)';
+              return '₩'+ctx.parsed.y.toLocaleString()+' ('+(((ctx.parsed.y/base)-1)*100).toFixed(1)+'%)';
+            },
+            filter:function(item){return item.raw!==null;}
+          }
+        }
+      },
+      scales:{
+        x:{grid:{color:'rgba(26,42,63,.5)'},
+           ticks:{color:'#4a6080',font:{family:"'IBM Plex Mono',monospace",size:14}}},
+        y:{min:0,max:(function(){
+          const allVals=[base, userAvg||0, effectiveCur||0, ...vals.filter(v=>v!==null)];
+          const maxVal=Math.max(...allVals);
+          // 10만 단위 올림, 최소 10만 보장, 여백 10% 추가
+          return Math.ceil(maxVal*1.1/100000)*100000||100000;
+        })(),grid:{color:'rgba(26,42,63,.5)'},
+           ticks:{color:'#4a6080',font:{family:"'IBM Plex Mono',monospace",size:14},
+             callback:function(v){return v>=10000?'₩'+(v/10000).toFixed(0)+'만':'₩'+v.toLocaleString();}}}
+      }
+    },
+    plugins:[overlayPlugin]
+  });
+}
+
+function renderTable(stocks){
+  const s=[...stocks].sort((a,b)=>new Date(b.dt)-new Date(a.dt));
+  document.getElementById('tb').innerHTML=s.map(x=>{
+    const r=getR(x),up=r>=0,sm=SM[x.sec]||SM.etc;
+    const cp=x.cur?`₩${x.cur.toLocaleString()}`:`₩${Math.round(x.ipo*(1+r/100)).toLocaleString()}*`;
+    return`<tr style="border-bottom:1px solid var(--bd);cursor:pointer" onclick="sw('main',document.querySelector('.nb'));setTimeout(()=>selectStock(STOCKS.find(z=>z.id===${x.id})),50)">
+      <td style="padding:11px 16px;font-weight:700">${x.name}</td>
+      <td style="padding:11px 12px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mt)">${x.code}</td>
+      <td style="padding:11px 12px"><span class="badge ${x.exch==='KOSPI'?'by':'bc'}" style="font-size:9px">${x.exch}</span></td>
+      <td style="padding:11px 12px"><span class="badge ${sm.cls}" style="font-size:9px">${sm.label}</span></td>
+      <td style="padding:11px 12px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mt)">${x.dt}</td>
+      <td style="padding:11px 12px;text-align:right;font-family:'IBM Plex Mono',monospace">₩${x.ipo.toLocaleString()}</td>
+      <td style="padding:11px 12px;text-align:right;font-family:'IBM Plex Mono',monospace">${cp}</td>
+      <td style="padding:11px 12px;text-align:right;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:${up?'var(--up)':'var(--dn)'}">${up?'+':''}${r.toFixed(1)}%</td>
+      <td style="padding:11px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mt)">${x.sub}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderSector(){
+  const cnt={};STOCKS.forEach(s=>{cnt[s.sec]=(cnt[s.sec]||0)+1;});
+  const mx=Math.max(...Object.values(cnt));
+  document.getElementById('secg').innerHTML=Object.entries(cnt).map(([k,v])=>{
+    const sm=SM[k]||SM.etc;
+    return`<div class="seci"><div class="secn" style="color:${sm.color}">${sm.label}</div><div class="secc">${v}개사</div><div class="secb"><div class="secbf" style="width:${(v/mx*100).toFixed(0)}%;background:${sm.color}"></div></div></div>`;
+  }).join('');
+}
+
+function updateAvg(){
+  const a=STOCKS.reduce((s,x)=>s+getR(x),0)/STOCKS.length;
+  document.getElementById('avg').textContent=(a>0?'+':'')+a.toFixed(1)+'%';
+}
+
+function setF(f,btn){
+  curF=f;
+  document.querySelectorAll('#fb .fc').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderList(getFiltered());
+}
+
+
+function renderPriceTable(){
+  const el=document.getElementById('price-rows');
+  if(!el) return;
+  el.innerHTML=STOCKS.map(function(s,i){
+    const uc=userPrices[s.id]&&userPrices[s.id].cur?userPrices[s.id].cur:(s.cur||'');
+    const ua=userPrices[s.id]&&userPrices[s.id].avg?userPrices[s.id].avg:'';
+    const cur=getUserCur(s);
+    const avg=getUserAvg(s);
+    const bg=i%2===0?'rgba(10,18,30,.4)':'rgba(16,26,42,.3)';
+    const INP_CUR='width:96px;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.25);border-radius:4px;padding:4px 7px;color:#00d4ff;font-size:10px;text-align:right;outline:none;font-family:IBM Plex Mono,monospace';
+    const INP_AVG='width:96px;background:rgba(74,158,255,.07);border:1px solid rgba(74,158,255,.25);border-radius:4px;padding:4px 7px;color:#4a9eff;font-size:10px;text-align:right;outline:none;font-family:IBM Plex Mono,monospace';
+    return [
+      '<div style="display:grid;grid-template-columns:28px 1fr 90px 110px 110px 90px;padding:7px 12px;background:'+bg+';align-items:center;border-bottom:1px solid rgba(26,42,63,.5)" id="pr-row-'+s.id+'">',
+        '<div style="font-size:9px;color:var(--mt);font-family:IBM Plex Mono,monospace">'+s.id+'</div>',
+        '<div>',
+          '<div style="font-size:11px;color:#e2eaf4;font-family:Noto Sans KR,sans-serif">'+s.name+'</div>',
+          '<div style="font-size:8px;color:var(--mt);font-family:IBM Plex Mono,monospace">'+s.code+' · '+s.exch+'</div>',
+        '</div>',
+        '<div style="font-size:10px;color:var(--mt);text-align:right;font-family:IBM Plex Mono,monospace">\u20a9'+s.ipo.toLocaleString()+'</div>',
+        '<div style="text-align:right"><input type="number" id="pi-cur-'+s.id+'" value="'+uc+'" placeholder="종가 입력" oninput="onPriceRowInput('+s.id+')" style="'+INP_CUR+'"></div>',
+        '<div style="text-align:right"><input type="number" id="pi-avg-'+s.id+'" value="'+ua+'" placeholder="평단 입력" oninput="onPriceRowInput('+s.id+')" style="'+INP_AVG+'"></div>',
+        '<div id="pr-pct-'+s.id+'" style="text-align:right">'+calcPctHtml(s,cur,avg)+'</div>',
+      '</div>'
+    ].join('');
+  }).join('');
+}
+
+function calcPctHtml(s,cur,avg){
+  const mono='font-family:IBM Plex Mono,monospace;';
+  if(cur&&avg){
+    const pnl=(cur-avg)/avg*100,up=pnl>=0;
+    return '<div style="'+mono+'font-size:10px;font-weight:700;color:'+(up?'var(--up)':'var(--dn)')+'">'+
+      (up?'+':'')+pnl.toFixed(1)+'%</div>'+
+      '<div style="'+mono+'font-size:8px;color:var(--mt);margin-top:1px">평단 대비</div>';
+  }
+  if(cur){
+    const pct=(cur-s.ipo)/s.ipo*100,up=pct>=0;
+    return '<div style="'+mono+'font-size:10px;font-weight:700;color:'+(up?'var(--up)':'var(--dn)')+'">'+
+      (up?'+':'')+pct.toFixed(1)+'%</div>'+
+      '<div style="'+mono+'font-size:8px;color:var(--mt);margin-top:1px">현재가/공모가</div>';
+  }
+  return '<div style="'+mono+'font-size:9px;color:var(--mt)">—</div>'+
+    '<div style="'+mono+'font-size:8px;color:var(--mt);margin-top:1px">미입력</div>';
+}
+
+function onPriceRowInput(id){
+  const s=STOCKS.find(x=>x.id===id);
+  if(!s) return;
+  const cur=parseInt((document.getElementById('pi-cur-'+id)||{}).value)||getUserCur(s)||null;
+  const avg=parseInt((document.getElementById('pi-avg-'+id)||{}).value)||getUserAvg(s)||null;
+  const el=document.getElementById('pr-pct-'+id);
+  if(el) el.innerHTML=calcPctHtml(s,cur,avg);
+}
+
+function saveAllPrices(){
+  STOCKS.forEach(function(s){
+    const curEl=document.getElementById('pi-cur-'+s.id);
+    const avgEl=document.getElementById('pi-avg-'+s.id);
+    const curVal=curEl?parseInt(curEl.value):NaN;
+    const avgVal=avgEl?parseInt(avgEl.value):NaN;
+    if(!userPrices[s.id]) userPrices[s.id]={};
+    if(!isNaN(curVal)&&curVal>0) userPrices[s.id].cur=curVal;
+    else if(curEl&&curEl.value==='') delete userPrices[s.id].cur;
+    if(!isNaN(avgVal)&&avgVal>0) userPrices[s.id].avg=avgVal;
+    else if(avgEl&&avgEl.value==='') delete userPrices[s.id].avg;
+    // 빈 객체 정리
+    if(userPrices[s.id]&&Object.keys(userPrices[s.id]).length===0) delete userPrices[s.id];
+  });
+  saveUserPrices();
+  // 저장 즉시 테이블 수익률 갱신
+  renderPriceTable();
+  // 리스트·차트 갱신
+  renderList(getFiltered());
+  renderTable(STOCKS);
+  if(sel) drawChart(sel);
+  // 피드백
+  const btn=document.querySelector('#tp-prices button');
+  btn.textContent='✓ 저장 완료!'; btn.style.color='var(--gn)';
+  setTimeout(function(){btn.textContent='💾 전체 저장';btn.style.color='#00d4ff';},2000);
+}
+
+function clearAllPrices(){
+  if(!confirm('저장된 모든 가격 데이터를 초기화할까요?')) return;
+  Object.keys(userPrices).forEach(function(k){ delete userPrices[k]; });
+  saveUserPrices();
+  renderPriceTable();
+  renderList(getFiltered());
+  if(sel) drawChart(sel);
+}
+
+function sw(id,btn){
+  document.querySelectorAll('.tp').forEach(p=>p.classList.remove('on'));
+  document.getElementById('tp-'+id).classList.add('on');
+  if(btn){document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+  if(id==='prices') renderPriceTable();
+  if(id==='lockup') renderLockupTable();
+}
+
+function renderLockupTable(){
+  const el=document.getElementById('lockup-rows');
+  if(!el) return;
+  const INP_S='border-radius:4px;padding:3px 6px;font-family:IBM Plex Mono,monospace;font-size:10px;outline:none;text-align:right;width:108px;';
+  const mkShareInp=function(sid,fid,val,rgb,tx){
+    return `<input type="number" id="${fid}-${sid}" value="${val||''}" placeholder="주수 입력"
+      style="${INP_S}background:${rgb},.07);border:1px solid ${rgb},.3);color:${tx};">`;
+  };
+  const mkCell=function(s,idx,col){
+    const lu=s.lockup&&s.lockup[idx];
+    if(!lu) return '<div style="text-align:center;font-size:9px;color:var(--mt)">—</div>';
+    const COLS=['rgba(255,215,0','rgba(255,59,107','rgba(167,139,250'];
+    const TXTS=['#ffd700','#ff3b6b','#a78bfa'];
+    const rgb=COLS[col], tx=TXTS[col];
+    const base='border-radius:4px;padding:3px 6px;font-family:IBM Plex Mono,monospace;font-size:10px;outline:none;';
+    const lblInp=`<input type="text" id="ll-${s.id}-${idx}" value="${lu.label||''}" placeholder="라벨명"
+      style="width:110px;background:${rgb},.08);border:1px solid ${rgb},.35);${base}color:${tx};text-align:left;">`;
+    const dInp=`<input type="number" id="ld-${s.id}-${idx}" value="${lu.d||''}" placeholder="일수"
+      style="width:50px;background:${rgb},.06);border:1px solid ${rgb},.25);${base}color:${tx};text-align:right;">`;
+    const qInp=`<input type="number" id="lq-${s.id}-${idx}" value="${lu.qty||''}" placeholder="주수"
+      style="width:90px;background:${rgb},.05);border:1px solid ${rgb},.2);${base}color:${tx};text-align:right;">`;
+    const rInp=`<input type="number" id="lr-${s.id}-${idx}" value="${lu.ratio!=null?lu.ratio:''}" placeholder="지분율" step="0.01" min="0" max="100"
+      style="width:70px;background:${rgb},.04);border:1px solid ${rgb},.18);${base}color:${tx};text-align:right;">`;
+    return `<div style="display:flex;flex-direction:column;gap:3px;align-items:flex-end">
+      <div>${lblInp}</div>
+      <div style="display:flex;align-items:center;gap:4px">${dInp}<span style="font-size:9px;color:var(--mt)">일</span></div>
+      <div style="display:flex;align-items:center;gap:4px">${qInp}<span style="font-size:9px;color:var(--mt)">주</span></div>
+      <div style="display:flex;align-items:center;gap:4px">${rInp}<span style="font-size:9px;color:var(--mt)">%</span></div>
+    </div>`;
+  };
+  el.innerHTML=STOCKS.map(function(s,i){
+    const bg=i%2===0?'rgba(10,18,30,.4)':'rgba(16,26,42,.3)';
+    const ts=s.totalShares||0;
+    const fs=s.freeShares||0;
+    const tPrice=s.totalPrice||0;
+    const tMcap=s.totalMcap||0;
+    const INP_T='border-radius:4px;padding:3px 6px;font-family:IBM Plex Mono,monospace;font-size:10px;outline:none;text-align:right;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.22);color:#00d4ff;';
+    const tsCellHtml=`<div style="display:flex;flex-direction:column;gap:3px;align-items:flex-end">
+      <div style="display:flex;align-items:center;gap:4px">
+        <input type="number" id="lts-${s.id}" value="${ts||''}" placeholder="주수" style="${INP_T}width:108px;">
+        <span style="font-size:9px;color:var(--mt)">주</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px">
+        <input type="number" id="ltp-${s.id}" value="${tPrice||''}" placeholder="1주당가격" style="${INP_T}width:108px;">
+        <span style="font-size:9px;color:var(--mt)">원</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px">
+        <input type="number" id="ltm-${s.id}" value="${tMcap||''}" placeholder="시가총액(억)" style="${INP_T}width:108px;">
+        <span style="font-size:9px;color:var(--mt)">억</span>
+      </div>
+    </div>`;
+    const fsInp=mkShareInp(s.id,'lfs',fs,'rgba(0,255,157','#00ff9d');
+    const frInp=`<input type="number" id="lfr-${s.id}" value="${s.freeRatio!=null?s.freeRatio:''}" placeholder="지분율" step="0.01" min="0" max="100"
+      style="width:80px;background:rgba(0,255,157,.04);border:1px solid rgba(0,255,157,.18);border-radius:4px;padding:3px 6px;color:#00ff9d;font-family:IBM Plex Mono,monospace;font-size:10px;text-align:right;outline:none;">`;
+    // 총주식수 대비 유통비율 계산
+    const ratioTxt=ts>0&&fs>0?`<div style="font-size:8px;color:var(--mt);margin-top:2px;text-align:right">${(fs/ts*100).toFixed(1)}% 유통</div>`:'';
+    const fsCellHtml=`<div style="display:flex;flex-direction:column;gap:3px;align-items:flex-end">
+      <div style="display:flex;align-items:center;gap:4px">${fsInp}</div>
+      <div style="display:flex;align-items:center;gap:4px">${frInp}<span style="font-size:9px;color:var(--mt)">%</span></div>
+      ${ratioTxt}
+    </div>`;    return `<div style="display:grid;grid-template-columns:28px 1fr 120px 130px 1fr 1fr 1fr;gap:0;padding:8px 12px;background:${bg};align-items:start;border-bottom:1px solid rgba(26,42,63,.5)" id="lu-row-${s.id}">
+      <div style="font-size:9px;color:var(--mt);font-family:IBM Plex Mono,monospace;padding-top:4px">${s.id}</div>
+      <div style="padding-top:4px">
+        <div style="font-size:11px;color:#e2eaf4;font-family:Noto Sans KR,sans-serif">${s.name}</div>
+        <div style="font-size:8px;color:var(--mt);font-family:IBM Plex Mono,monospace;margin-top:2px">${s.code} · ${s.dt}</div>
+      </div>
+      <div style="text-align:right;padding-top:2px">${tsCellHtml}</div>
+      <div style="text-align:right;padding-top:2px">${fsCellHtml}</div>
+      <div style="text-align:right">${mkCell(s,0,0)}</div>
+      <div style="text-align:right">${mkCell(s,1,1)}</div>
+      <div style="text-align:right">${mkCell(s,2,2)}</div>
+    </div>`;
+  }).join('');
+}
+
+function saveLockupQty(){
+  STOCKS.forEach(function(s){
+    const tsEl=document.getElementById('lts-'+s.id);
+    const tpEl=document.getElementById('ltp-'+s.id);
+    const tmEl=document.getElementById('ltm-'+s.id);
+    const fsEl=document.getElementById('lfs-'+s.id);
+    const frEl=document.getElementById('lfr-'+s.id);
+    if(tsEl){ const v=parseInt(tsEl.value);   s.totalShares=isNaN(v)?0:v; }
+    if(tpEl){ const v=parseFloat(tpEl.value); s.totalPrice=isNaN(v)?0:v; }
+    if(tmEl){ const v=parseFloat(tmEl.value); s.totalMcap=isNaN(v)?0:v; }
+    if(fsEl){ const v=parseInt(fsEl.value);   s.freeShares=isNaN(v)?0:v; }
+    if(frEl){ const v=parseFloat(frEl.value); s.freeRatio=isNaN(v)?null:v; }
+    if(!s.lockup) return;
+    s.lockup.forEach(function(lu,idx){
+      const lEl=document.getElementById('ll-'+s.id+'-'+idx);
+      const dEl=document.getElementById('ld-'+s.id+'-'+idx);
+      const qEl=document.getElementById('lq-'+s.id+'-'+idx);
+      const rEl=document.getElementById('lr-'+s.id+'-'+idx);
+      if(lEl&&lEl.value.trim()) lu.label=lEl.value.trim();
+      if(dEl){ const v=parseInt(dEl.value); if(!isNaN(v)&&v>0) lu.d=v; }
+      if(qEl){ lu.qty=parseInt(qEl.value)||0; }
+      if(rEl){ const rv=parseFloat(rEl.value); lu.ratio=isNaN(rv)?null:rv; }
+    });
+  });
+  // localStorage 저장
+  const data={};
+  STOCKS.forEach(function(s){
+    data[s.id]={
+      totalShares:s.totalShares||0,
+      totalPrice:s.totalPrice||0,
+      totalMcap:s.totalMcap||0,
+      freeShares:s.freeShares||0,
+      freeRatio:s.freeRatio!=null?s.freeRatio:null,
+      lockup:(s.lockup||[]).map(function(lu){
+        return {d:lu.d, label:lu.label, qty:lu.qty||0, ratio:lu.ratio!=null?lu.ratio:null};
+      })
+    };
+  });
+  localStorage.setItem('ipo_lockup', JSON.stringify(data));
+  if(sel) drawChart(sel);
+  const btn=document.querySelector('#tp-lockup button');
+  btn.textContent='✓ 저장 완료!'; btn.style.color='var(--gn)';
+  setTimeout(function(){btn.textContent='💾 전체 저장';btn.style.color='#00d4ff';},2000);
+}
+
+function loadLockupData(){
+  try{
+    const data=JSON.parse(localStorage.getItem('ipo_lockup')||'{}');
+    STOCKS.forEach(function(s){
+      const saved=data[s.id];
+      if(!saved) return;
+      // 구버전(배열) 호환
+      const lockupArr=Array.isArray(saved)?saved:saved.lockup;
+      if(lockupArr&&s.lockup){
+        lockupArr.forEach(function(sv,idx){
+          if(!s.lockup[idx]) return;
+          if(sv.label) s.lockup[idx].label=sv.label;
+          if(sv.d>0)   s.lockup[idx].d=sv.d;
+          s.lockup[idx].qty=sv.qty||0;
+          s.lockup[idx].ratio=sv.ratio!=null?sv.ratio:null;
+        });
+      }
+      if(!Array.isArray(saved)){
+        s.totalShares=saved.totalShares||0;
+        s.totalPrice=saved.totalPrice||0;
+        s.totalMcap=saved.totalMcap||0;
+        s.freeShares=saved.freeShares||0;
+        s.freeRatio=saved.freeRatio!=null?saved.freeRatio:null;
+      }
+    });
+  }catch(e){}
+}
+</script>
+</body>
+</html>
